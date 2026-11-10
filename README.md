@@ -5,6 +5,9 @@
 > **60-Second 1080p Walkthrough Video:** [`demo.mp4`](demo.mp4)  
 > **CLI WCAG 2.2 AA & Readability Auditor:** [`wcag_auditor.py`](wcag_auditor.py)
 
+> [!NOTE]
+> **Implementation Disclosure:** Both `wcag_auditor.py` and the GitHub Pages web studio perform deterministic rule-based readability simplification, Bionic fixation formatting, WCAG 2.2 AA DOM/contrast checks, and browser Web Speech API synthesis locally on the client (no external cloud LLM API calls required).
+
 ---
 
 ## 1. Problem Statement
