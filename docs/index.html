@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AccessLens AI | Universal Cognitive, Dyslexia &amp; WCAG 2.2 AA Transformation Studio — Ctrl+V Hackathon</title>
+  <style>
+    :root {
+      --bg-main: #070b14;
+      --bg-panel: #0f172a;
+      --bg-panel-alt: #131e35;
+      --border-col: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-teal: #14b8a6;
+      --accent-sky: #38bdf8;
+      --accent-violet: #a855f7;
+      --accent-amber: #f59e0b;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg-main);
+      background-image:
+        radial-gradient(circle at 10% 12%, rgba(20, 184, 166, 0.09), transparent 28%),
+        radial-gradient(circle at 88% 16%, rgba(168, 85, 247, 0.09), transparent 30%);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+    header {
+      background: rgba(15, 23, 42, 0.92);
+      border-bottom: 1px solid var(--border-col);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 13px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #14b8a6, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 0 16px rgba(20, 184, 166, 0.35);
+    }
+    .brand-name {
+      font-size: 18.5px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .brand-tag {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .mode-tabs {
+      display: flex;
+      gap: 6px;
+      background: #080d19;
+      padding: 5px;
+      border-radius: 10px;
+      border: 1px solid var(--border-col);
+    }
+    .mode-tab {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      padding: 8px 14px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+    .mode-tab:hover {
+      color: #fff;
+    }
+    .mode-tab.active {
+      background: linear-gradient(135deg, rgba(20, 184, 166, 0.22), rgba(56, 189, 248, 0.22));
+      color: #2dd4bf;
+      border-color: rgba(20, 184, 166, 0.45);
+    }
+    .wcag-badge {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.38);
+    }
+    .main-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 26px 40px;
+    }
+    /* Preset + Input Strip */
+    .preset-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-col);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .preset-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .preset-pill {
+      background: #131e35;
+      border: 1px solid #283756;
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .preset-pill.active, .preset-pill:hover {
+      background: rgba(20, 184, 166, 0.18);
+      border-color: #14b8a6;
+      color: #fff;
+    }
+    /* Metric Banner */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .metric-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-col);
+      border-radius: 12px;
+      padding: 14px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #14b8a6, #38bdf8, #a855f7);
+    }
+    .metric-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .metric-val {
+      font-size: 23px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #fff;
+    }
+    .metric-sub {
+      font-size: 12px;
+      color: #34d399;
+      margin-top: 3px;
+      font-weight: 600;
+    }
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 18px;
+    }
+    .panel-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-col);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+    }
+    .panel-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+    .tag-chip {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.14);
+      color: #38bdf8;
+    }
+    textarea.source-input {
+      width: 100%;
+      height: 250px;
+      background: #080d19;
+      color: #e2e8f0;
+      border: 1px solid #263449;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+      resize: vertical;
+    }
+    .mode-panel {
+      display: none;
+    }
+    .mode-panel.active {
+      display: block;
+    }
+    /* Mode 1: Plain Language */
+    .summary-card {
+      background: #091224;
+      border-left: 4px solid #14b8a6;
+      border-radius: 8px;
+      padding: 13px 16px;
+      margin-bottom: 14px;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #0b1324;
+      border: 1px solid #1e293b;
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+    .glossary-item {
+      background: #091020;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 12px;
+    }
+    /* Mode 2: Bionic & Dyslexia Studio */
+    .dyslexia-toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      background: #080d19;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
+    }
+    .dyslexia-reader {
+      border-radius: 12px;
+      padding: 22px 24px;
+      font-size: 18px;
+      line-height: 2.05;
+      letter-spacing: 0.06em;
+      word-spacing: 0.16em;
+      position: relative;
+      border: 2px solid #2dd4bf;
+      transition: all 0.2s;
+    }
+    .dyslexia-reader.theme-dark {
+      background: #0b1322;
+      color: #f1f5f9;
+    }
+    .dyslexia-reader.theme-cream {
+      background: #fdf6e3;
+      color: #1e293b;
+      border-color: #d97706;
+    }
+    .dyslexia-reader.theme-highcontrast {
+      background: #000000;
+      color: #fde047;
+      border-color: #fde047;
+    }
+    .reading-ruler {
+      margin-top: 14px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(56, 189, 248, 0.14);
+      border-left: 4px solid #38bdf8;
+      font-size: 13px;
+    }
+    /* Mode 3: WCAG 2.2 AA Auditor & Screen Reader */
+    .finding-row {
+      background: #091020;
+      border: 1px solid #1e293b;
+      border-left: 4px solid #f43f5e;
+      border-radius: 8px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+    .code-box {
+      background: #060a12;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #34d399;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      max-height: 175px;
+    }
+    .tts-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(168, 85, 247, 0.14);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+    }
+    .btn-action {
+      background: linear-gradient(135deg, #14b8a6, #0284c7);
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">AL</div>
+        <div>
+          <div class="brand-name">AccessLens AI <span style="font-weight:400;font-size:12.5px;color:#2dd4bf;">WCAG 2.2 AA + Cognitive Access</span></div>
+          <div class="brand-tag">Real-Time Plain Language, Bionic Dyslexia Typography, ARIA Remediation &amp; Visual Concept Maps</div>
+        </div>
+      </div>
+
+      <nav class="mode-tabs" aria-label="Cognitive and Sensory Access Modes">
+        <button class="mode-tab active" id="tab-plain" onclick="setMode('plain')">1. Plain-Language (CEFR B1)</button>
+        <button class="mode-tab" id="tab-dyslexia" onclick="setMode('dyslexia')">2. Bionic &amp; Dyslexia Mode</button>
+        <button class="mode-tab" id="tab-wcag" onclick="setMode('wcag')">3. WCAG 2.2 AA &amp; Screen-Reader</button>
+        <button class="mode-tab" id="tab-visual" onclick="setMode('visual')">4. Visual Concept Flowchart</button>
+      </nav>
+
+      <span class="wcag-badge">● ZERO-INSTALL ACCESSIBILITY ENGINE</span>
+    </div>
+  </header>
+
+  <main class="main-wrap">
+    <!-- Preset Selector Strip -->
+    <section class="preset-strip" aria-label="Real-world document presets">
+      <div style="font-size:12.5px;font-weight:700;color:#e2e8f0;">Select Real-World Barrier Preset (or Paste Custom HTML/Text):</div>
+      <div class="preset-buttons">
+        <button class="preset-pill active" id="preset-btn-0" onclick="selectPreset(0)">1. Hospital Discharge Instructions (Medical)</button>
+        <button class="preset-pill" id="preset-btn-1" onclick="selectPreset(1)">2. Student Financial Aid Agreement (Financial)</button>
+        <button class="preset-pill" id="preset-btn-2" onclick="selectPreset(2)">3. Government Benefits Form (Civic/Legal)</button>
+        <button class="preset-pill" id="preset-btn-3" onclick="selectPreset(3)">4. Technical API Specification (Developer Docs)</button>
+      </div>
+    </section>
+
+    <!-- Live Readability & Accessibility KPIs -->
+    <section class="metrics-row">
+      <div class="metric-box">
+        <div class="metric-title">Reading Grade Level Reduction</div>
+        <div class="metric-val" id="kpi-grade">Grade 16.4 → 5.2</div>
+        <div class="metric-sub" id="kpi-grade-delta">-11.2 Grades (CEFR B1 Target Met)</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">WCAG 2.2 AA Compliance Score</div>
+        <div class="metric-val" id="kpi-wcag-score">18% → 100%</div>
+        <div class="metric-sub" id="kpi-wcag-fixes">6 Structural &amp; Contrast Fixes Applied</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">Foreground / Background Contrast</div>
+        <div class="metric-val" id="kpi-contrast">2.84:1 → 14.8:1</div>
+        <div class="metric-sub">Exceeds WCAG 2.2 AAA (7.0:1 Threshold)</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-title">Cognitive Jargon &amp; Action Steps</div>
+        <div class="metric-val" id="kpi-jargon">9 Terms Decoded</div>
+        <div class="metric-sub" id="kpi-steps">4 Verifiable Action Checklist Steps</div>
+      </div>
+    </section>
+
+    <div class="workspace-grid">
+      <!-- Left Column: Source Document & Live Barrier Diagnosis -->
+      <section class="panel-card">
+        <div class="panel-head">
+          <div class="panel-title">Original Complex Text / Inaccessible HTML Source</div>
+          <span class="tag-chip" id="source-domain-tag">Medical / Clinical</span>
+        </div>
+        <textarea id="source-editor" class="source-input" aria-label="Complex source text or HTML input" oninput="runAllTransformations()"></textarea>
+
+        <div style="margin-top:14px;">
+          <div class="panel-head" style="margin-bottom:10px;padding-bottom:6px;">
+            <div class="panel-title" style="font-size:13px;">Detected Cognitive &amp; WCAG 2.2 AA Barriers</div>
+            <span class="tag-chip" style="background:rgba(244,63,94,0.16);color:#fb7185;" id="barrier-count-chip">6 Barriers Detected</span>
+          </div>
+          <div id="left-barrier-summary"></div>
+        </div>
+      </section>
+
+      <!-- Right Column: Active Cognitive / Sensory Access Mode -->
+      <section class="panel-card">
+        <!-- MODE 1: PLAIN LANGUAGE -->
+        <div id="panel-plain" class="mode-panel active">
+          <div class="panel-head">
+            <div class="panel-title">Mode 1: Plain-Language Reading Level (5th-Grade / CEFR B1 Transformation)</div>
+            <span class="tag-chip">Cognitive Access</span>
+          </div>
+
+          <div class="summary-card">
+            <div style="font-size:11.5px;text-transform:uppercase;letter-spacing:0.05em;color:#2dd4bf;font-weight:700;margin-bottom:4px;">
+              CEFR B1 Executive Summary (What You Need to Know Right Now)
+            </div>
+            <div id="plain-exec-summary" style="font-size:14.5px;color:#f8fafc;"></div>
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <div style="font-size:12.5px;font-weight:700;color:#cbd5e1;margin-bottom:8px;">
+              Interactive Step-by-Step Action Checklist (Check Off As Completed):
+            </div>
+            <div id="plain-checklist"></div>
+          </div>
+
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">
+              Auto-Decoded Jargon Glossary (Original Term → Plain 5th-Grade Meaning):
+            </div>
+            <div id="plain-glossary" class="glossary-grid"></div>
+          </div>
+        </div>
+
+        <!-- MODE 2: BIONIC / DYSLEXIA TYPOGRAPHY -->
+        <div id="panel-dyslexia" class="mode-panel">
+          <div class="panel-head">
+            <div class="panel-title">Mode 2: Bionic Word-Initial Fixation &amp; Dyslexia-Friendly Typography</div>
+            <span class="tag-chip">Neurodivergent &amp; Low-Vision</span>
+          </div>
+
+          <div class="dyslexia-toolbar">
+            <button class="preset-pill active" id="theme-btn-dark" onclick="setDyslexiaTheme('dark')">AAA Dark Slate (15.8:1)</button>
+            <button class="preset-pill" id="theme-btn-cream" onclick="setDyslexiaTheme('cream')">Warm Cream Paper (13.4:1)</button>
+            <button class="preset-pill" id="theme-btn-hc" onclick="setDyslexiaTheme('highcontrast')">High-Contrast Yellow/Black (19.6:1)</button>
+            <button class="preset-pill active" id="btn-toggle-syllables" onclick="toggleSyllables()">Syllable Spacer: ON</button>
+          </div>
+
+          <div id="dyslexia-viewport" class="dyslexia-reader theme-dark"></div>
+
+          <div class="reading-ruler">
+            <strong>Active Line-Focus Visual Anchor:</strong> Bionic word-initial fixation bolds the leading 45% of each word so the eye anchors rapidly without skipping lines or transposing adjacent characters.
+          </div>
+        </div>
+
+        <!-- MODE 3: SCREEN-READER & ARIA SEMANTIC TREE REPAIR -->
+        <div id="panel-wcag" class="mode-panel">
+          <div class="panel-head">
+            <div class="panel-title">Mode 3: Screen-Reader &amp; ARIA Semantic Tree Auto-Remediation</div>
+            <span class="tag-chip">WCAG 2.2 Level AA</span>
+          </div>
+
+          <div class="tts-bar">
+            <div>
+              <div style="font-size:12.5px;font-weight:700;color:#f3e8ff;">Web Speech API Screen-Reader Narration Engine</div>
+              <div style="font-size:11.5px;color:#d8b4fe;" id="tts-status-text">Ready to narrate remediated ARIA landmarks &amp; action steps</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="tts-rate" style="background:#090d16;color:#fff;border:1px solid #7e22ce;border-radius:6px;padding:5px 8px;font-size:12px;">
+                <option value="0.85">0.85x (Calm Cadence)</option>
+                <option value="1.0" selected>1.0x (Standard Cadence)</option>
+                <option value="1.25">1.25x (Fast Screen-Reader)</option>
+              </select>
+              <button class="btn-action" onclick="speakRemediatedContent()">▶ Narrate Accessible Output</button>
+            </div>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="font-size:12.5px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">
+              WCAG 2.2 AA Audit Findings &amp; Automatic DOM Fixes:
+            </div>
+            <div id="wcag-findings-list"></div>
+          </div>
+
+          <div>
+            <div style="font-size:12.5px;font-weight:700;color:#cbd5e1;margin-bottom:6px;">
+              Repaired WCAG 2.2 AA Compliant HTML &amp; ARIA Semantic Landmarks:
+            </div>
+            <pre id="wcag-repaired-code" class="code-box"></pre>
+          </div>
+        </div>
+
+        <!-- MODE 4: VISUAL CONCEPT MAP (SVG FLOWCHART) -->
+        <div id="panel-visual" class="mode-panel">
+          <div class="panel-head">
+            <div class="panel-title">Mode 4: Interactive Visual Concept Map &amp; Decision Flowchart (SVG)</div>
+            <span class="tag-chip">Visual Spatial Comprehension</span>
+          </div>
+          <p style="font-size:12.5px;color:#94a3b8;margin-bottom:12px;">
+            Automatically transforms dense procedural sentences into a sequential visual decision pathway for visual thinkers and non-native speakers:
+          </p>
+          <div id="visual-svg-container" style="width:100%;background:#080e1c;border:1px solid #1e293b;border-radius:12px;padding:12px;"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
